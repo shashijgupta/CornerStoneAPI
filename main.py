@@ -1,6 +1,6 @@
 import requests
 from typing import Tuple
-import serviceTitan.utils as utils
+import utils
 from datetime import datetime, timedelta
 from fastapi.responses import JSONResponse
 from pytz import timezone
