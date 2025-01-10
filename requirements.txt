@@ -1,0 +1,8 @@
+fastapi==0.115.6
+pydantic==2.10.5
+python-dateutil==2.8.0
+uvicorn==0.24.0
+anyio==4.8.0
+starlette==0.41.3
+requests==2.31.0
+pytz==2024.1
