@@ -3,4 +3,4 @@ services:
     name: fastapi-app
     runtime: python3.9
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn CornerStoneAPI.main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn CornerStoneAPI.main:router --host 0.0.0.0 --port $PORT
