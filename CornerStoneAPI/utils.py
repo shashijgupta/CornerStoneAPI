@@ -78,6 +78,7 @@ class jobCreateToolRequest(ToolRequest):
 
 class getAvailableSlotsRequest(BaseModel):
     start_time: str
+    jobTypeId: int
     # end_time: str
 
 class getAvailableSlotsToolRequest(ToolRequest):

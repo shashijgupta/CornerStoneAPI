@@ -15,7 +15,7 @@ AUTH_URL = "https://auth.servicetitan.io/connect/token"
 CLIENT_ID = "cid.g4y7nxozzkzfjamb8dttxh9xj"  # Replace with your client ID
 CLIENT_SECRET = "cs1.hp5lbxkaeuznsr0rpnrpldo8gj347rmp7t1rq0ngsoj3q91jom"  # Replace with your client secret
 TENANT_ID = 488267682
-APP_ID = "36ukhfkyd4ym3"
+APP_ID = "ak1.huv221jqp2ky1gsaspj857kjf"
 
 
 # Function to generate access token: https://developer.servicetitan.io/docs/get-going-first-api-call/
@@ -74,6 +74,7 @@ async def create_customer(customer: utils.CustomerCreateRequest) -> Tuple[str, s
 async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRequest):
 
     start_time = availabilityRequest.args.start_time
+    jobTypeId = availabilityRequest.args.jobTypeId
     end_datetime = datetime.strptime(availabilityRequest.args.start_time, "%Y-%m-%d %H:%M") + timedelta(minutes=240)
     end_time = end_datetime.strftime("%Y-%m-%d %H:%M")
 
@@ -93,10 +94,10 @@ async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRe
         payload = {
             "startsOnOrAfter": start_time,  # interval["starttime"],
             "endsOnOrBefore": end_time,  # interval["endtime"],
-            "businessUnitIds": [
-                1097
-            ],  # get business unit list: https://developer.servicetitan.io/api-details/#api=tenant-settings-v2&operation=BusinessUnits_GetList
-            "jobTypeId": 1124,
+            # "businessUnitIds": [
+            #     1097
+            # ],  # get business unit list: https://developer.servicetitan.io/api-details/#api=tenant-settings-v2&operation=BusinessUnits_GetList
+            "jobTypeId": jobTypeId,
             "skillBasedAvailability": True,
         }
         response = requests.post(external_api_url, json=payload, headers=headers)
