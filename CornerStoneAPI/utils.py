@@ -31,9 +31,9 @@ def generate_intervals(start_time: str, end_time: str):
 
 
 class Address(BaseModel):
-    street: Optional[str] = "1003 W Clark St"
-    city: Optional[str] = "Urbana"
-    zip: Optional[str] = "61801"
+    street: str
+    city: str
+    zip: str
 
     model_config = ConfigDict(
         extra='allow',
@@ -42,12 +42,14 @@ class Address(BaseModel):
 
 
 class Location(BaseModel):
-    name: str
+    name: Optional[str] = "Home"
     address: Address
 
 
 class CustomerCreateRequest(BaseModel):
-    name: str = Field(default="Vanshika", description="Name of the customer")
+    name: str = Field(description="Name of the customer")
+    email: str = Field(description="Email of the customer")
+    phone: str = Field(description="Phone number of the customer")
     type: Optional[str] = "Residential"
     locations: Location = Field(..., description="Locations for the customer")
     
@@ -57,7 +59,7 @@ class JobCreateRequest(BaseModel):
     customer: CustomerCreateRequest
     # customerId: int
     # locationId: int
-    # jobTypeId: int = Field(default=1, description="ID of the job type")
+    jobTypeId: int = Field(default=1, description="ID of the job type")
     jobStartTime: str = Field(
         default=(datetime.now() + timedelta(hours=5)).strftime("%Y-%m-%d %H:%M"),
         description="Scheduled date in YYYY-MM-DD format",

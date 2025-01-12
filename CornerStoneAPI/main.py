@@ -50,8 +50,12 @@ async def create_customer(customer: utils.CustomerCreateRequest) -> Tuple[str, s
     }
 
     try:
+        # customer.locations.address.street_name = customer.street_name
+        # customer.locations.address.city = customer.city
+        # customer.locations.address.zip_code = customer.zip_code
+        customer.locations.address.state = "NH"
         customer.locations.address.country = "USA"
-        customer.locations.address.state = "SC"
+        customer.locations.name = "Home"
         payload = customer.model_dump(by_alias=True)
         payload["locations"] = [payload["locations"]]
         payload["address"] = customer.locations.address.model_dump()
@@ -156,10 +160,10 @@ async def create_job(job_request: utils.jobCreateToolRequest):
         payload = {
             "customerId": customer_id,
             "locationId": location_id,
-            "jobTypeId": 12349998,  # job type id for plumbing
+            "jobTypeId": job_request.jobTypeId,  # job type id for plumbing
             "priority": "Normal",
-            "businessUnitId": 1097,
-            "campaignId": 1314,  # campaign id for Yelp Advertising
+            "businessUnitId": 3619517,
+            "campaignId": 82014707,  # campaign id for Yelp Advertising
             "appointments": [
                 {
                     "start": job_request.jobStartTime,
@@ -171,7 +175,6 @@ async def create_job(job_request: utils.jobCreateToolRequest):
             ],
             "scheduledDate": datetime.now().strftime("%Y-%m-%d"),
             "scheduledTime": datetime.now().strftime("%H:%M"),
-            "summary": "Plumbing Inspection",
         }
         response = requests.post(url, headers=headers, json=payload)
         if response.status_code == 200:
