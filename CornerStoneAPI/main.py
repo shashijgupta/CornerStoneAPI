@@ -76,10 +76,20 @@ async def create_customer(customer: utils.CustomerCreateRequest) -> Tuple[str, s
 # Main API endpoint: https://developer.servicetitan.io/api-details/#api=tenant-dispatch-v2&operation=Capacity_GetList
 @router.post("/get-available-slots/")
 async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRequest):
-
     start_time = availabilityRequest.args.start_time
     jobTypeId = availabilityRequest.args.jobTypeId
-    end_datetime = datetime.strptime(availabilityRequest.args.start_time, "%Y-%m-%d %H:%M") + timedelta(minutes=240)
+    
+    # Calculate end datetime skipping weekends
+    start_datetime = datetime.strptime(start_time, "%Y-%m-%d %H:%M")
+    remaining_hours = 36  # 2160 minutes = 36 hours
+    end_datetime = start_datetime
+
+    while remaining_hours > 0:
+        end_datetime += timedelta(hours=1)
+        # Skip if it's weekend (5 = Saturday, 6 = Sunday)
+        if end_datetime.weekday() not in [5, 6]:
+            remaining_hours -= 1
+            
     end_time = end_datetime.strftime("%Y-%m-%d %H:%M")
 
     access_token = await get_access_token()
