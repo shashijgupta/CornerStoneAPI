@@ -154,10 +154,12 @@ async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRe
 async def create_job(job_request: utils.jobCreateToolRequest):
     job_request = job_request.args
 
-    # Convert UTC times to EST
-    est = timezone('US/Eastern')
-    start_time = datetime.fromisoformat(job_request.jobStartTime).astimezone(est).strftime('%Y-%m-%dT%H:%M:%S%z')
-    end_time = datetime.fromisoformat(job_request.jobEndTime).astimezone(est).strftime('%Y-%m-%dT%H:%M:%S%z')
+    # Convert EST to PST by adding 8 hours
+    start_time = datetime.strptime(job_request.jobStartTime, "%Y-%m-%d %H:%M") + timedelta(hours=8)
+    end_time = datetime.strptime(job_request.jobEndTime, "%Y-%m-%d %H:%M") + timedelta(hours=8)
+    
+    start_time_pst = start_time.strftime("%Y-%m-%d %H:%M")
+    end_time_pst = end_time.strftime("%Y-%m-%d %H:%M")
 
     url = f"https://api.servicetitan.io/jpm/v2/tenant/{TENANT_ID}/jobs"
     access_token = await get_access_token()
@@ -179,10 +181,10 @@ async def create_job(job_request: utils.jobCreateToolRequest):
             "campaignId": 82014707,
             "appointments": [
                 {
-                    "start": start_time,
-                    "end": end_time,
-                    "arrivalWindowStart": start_time,
-                    "arrivalWindowEnd": end_time,
+                    "start": start_time_pst,
+                    "end": end_time_pst,
+                    "arrivalWindowStart": start_time_pst,
+                    "arrivalWindowEnd": end_time_pst,
                     # "technicianIds": [0],
                 }
             ],
