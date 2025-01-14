@@ -133,9 +133,7 @@ async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRe
                     #     previous_slot = interval
                     available_slot = {
                         "starttime": slot["start"],
-                        "endtime": slot["end"],
-                        "starttime_UTC": slot["startUtc"],
-                        "endtime_UTC": slot["endUtc"],
+                        "endtime": slot["end"]
                     }
                     available_slots.append(available_slot)
                 # Ensure Service Length Fits:
@@ -156,6 +154,11 @@ async def get_available_slots(availabilityRequest: utils.getAvailableSlotsToolRe
 async def create_job(job_request: utils.jobCreateToolRequest):
     job_request = job_request.args
 
+    # Convert UTC times to EST
+    est = timezone('US/Eastern')
+    start_time = datetime.fromisoformat(job_request.jobStartTime).astimezone(est).strftime('%Y-%m-%dT%H:%M:%S%z')
+    end_time = datetime.fromisoformat(job_request.jobEndTime).astimezone(est).strftime('%Y-%m-%dT%H:%M:%S%z')
+
     url = f"https://api.servicetitan.io/jpm/v2/tenant/{TENANT_ID}/jobs"
     access_token = await get_access_token()
 
@@ -170,16 +173,16 @@ async def create_job(job_request: utils.jobCreateToolRequest):
         payload = {
             "customerId": customer_id,
             "locationId": location_id,
-            "jobTypeId": job_request.jobTypeId,  # job type id for plumbing
+            "jobTypeId": job_request.jobTypeId,
             "priority": "Normal",
             "businessUnitId": 3619517,
-            "campaignId": 82014707,  # campaign id for Yelp Advertising
+            "campaignId": 82014707,
             "appointments": [
                 {
-                    "start": job_request.jobStartTime,
-                    "end": job_request.jobEndTime,
-                    "arrivalWindowStart": job_request.jobStartTime,
-                    "arrivalWindowEnd": job_request.jobEndTime,
+                    "start": start_time,
+                    "end": end_time,
+                    "arrivalWindowStart": start_time,
+                    "arrivalWindowEnd": end_time,
                     # "technicianIds": [0],
                 }
             ],
