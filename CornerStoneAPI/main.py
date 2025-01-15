@@ -191,15 +191,15 @@ async def create_job(job_request: utils.jobCreateToolRequest):
             "scheduledDate": datetime.now().strftime("%Y-%m-%d"),
             "scheduledTime": datetime.now().strftime("%H:%M"),
         }
-        return {"status": "Job request booked"}
-        # response = requests.post(url, headers=headers, json=payload)
-        # if response.status_code == 200:
-        #     return {"status": "Job request booked"}
-        # else:
-        #     raise HTTPException(
-        #         status_code=response.status_code,
-        #         detail=f"External API call failed with status code {response.status_code}: {response.text}",
-        #     )
+        # return {"status": "Job request booked"}
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code == 200:
+            return {"status": "Job request booked"}
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"External API call failed with status code {response.status_code}: {response.text}",
+            )
     except requests.exceptions.HTTPError as http_err:
         raise HTTPException(
             status_code=response.status_code,
